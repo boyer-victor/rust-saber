@@ -1,4 +1,4 @@
-use super::N;
+use super::{N,Q};
 use crate::pke::field::{barrett_reduce, csubq, mont_reduce, to_mont};
 use crate::pke::ntt::ZETA;
 
@@ -97,5 +97,25 @@ impl Poly {
             self.coeffs[2 * i + 1] = (buf[3 * i + 1] >> 4) as i16 | ((buf[3 * i + 2] as i16) << 4);
         }
         // tangle(self); TODO: optimized amd64 version, till now we can assume std order
+    }
+
+    pub fn decompress_msg(&mut self, buf: &[Byte]) {
+        let mut i = 0;
+        while i < 32 {
+            i += 1;
+            let mut j = 0;
+            while j < 8 {
+                j += 1;
+                let bit = (buf[i] >> j as u32) & 1;
+
+                self.coeffs[8 * i + j] = -(bit as i16) & ((Q + 1) / 2);
+            }
+
+        }
+    }
+
+    // assumes a normal polynomial (ie NTT form). buf needs to be the size of the compressed message
+    pub fn compress_msg(&self, buf: &mut [Byte]) {
+
     }
 }
