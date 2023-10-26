@@ -27,9 +27,7 @@ pub unsafe fn tangle(p: &Poly) {
     // init registers
     let mut a0: i256;
 
-     asm!{
-
-     }
+    asm! {}
 }
 
 #[cfg(target_feature = "avx2")]
